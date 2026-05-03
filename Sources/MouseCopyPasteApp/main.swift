@@ -41,7 +41,7 @@ private final class MouseEventRouter {
 
 @MainActor
 private final class AppDelegate: NSObject, NSApplicationDelegate {
-    private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+    private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     private let router = MouseEventRouter()
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
@@ -59,7 +59,15 @@ private final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func configureMenu() {
-        statusItem.button?.title = "CopyPaste"
+        if let image = loadStatusIcon() {
+            image.size = NSSize(width: 18, height: 18)
+            image.isTemplate = true
+            statusItem.button?.image = image
+            statusItem.button?.imagePosition = .imageOnly
+        } else {
+            statusItem.button?.title = "CP"
+        }
+        statusItem.button?.toolTip = "MouseCopyPaste"
 
         let menu = NSMenu()
         let status = NSMenuItem(title: "Starting...", action: nil, keyEquivalent: "")
@@ -73,6 +81,16 @@ private final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(quit), keyEquivalent: "q"))
 
         statusItem.menu = menu
+    }
+
+    private func loadStatusIcon() -> NSImage? {
+        if let image = NSImage(named: "StatusIconTemplate") {
+            return image
+        }
+
+        let bundleURL = Bundle.module.url(forResource: "StatusIconTemplate", withExtension: "png")
+        let mainURL = Bundle.main.url(forResource: "StatusIconTemplate", withExtension: "png")
+        return [bundleURL, mainURL].compactMap { $0 }.compactMap(NSImage.init(contentsOf:)).first
     }
 
     private func requestAccessibilityIfNeeded() {
@@ -136,7 +154,7 @@ private final class AppDelegate: NSObject, NSApplicationDelegate {
         let running = eventTap != nil
         let text = message ?? (trusted && running ? "Active: middle=copy, button5=paste" : "Permission needed")
         statusMenuItem?.title = text
-        statusItem.button?.title = trusted && running ? "CopyPaste" : "CopyPaste!"
+        statusItem.button?.toolTip = trusted && running ? "MouseCopyPaste active" : "MouseCopyPaste needs permission"
     }
 }
 

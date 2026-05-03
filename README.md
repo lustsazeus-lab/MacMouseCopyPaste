@@ -15,6 +15,9 @@ A tiny macOS menu bar utility that maps middle click to copy and mouse button 5 
 - 常驻菜单栏，没有主窗口。
 - Lives in the menu bar with no main window.
 
+- 菜单栏使用固定宽度图标，不占用文字空间。
+- The menu bar item uses a fixed-width icon instead of a text label.
+
 - 不依赖 Mac Mouse Fix、Karabiner 或其它鼠标管理软件。
 - Does not depend on Mac Mouse Fix, Karabiner, or any other mouse manager.
 

@@ -15,6 +15,9 @@ let package = Package(
         .executableTarget(
             name: "MouseCopyPasteApp",
             dependencies: ["MouseCopyPasteCore"],
+            resources: [
+                .process("Resources")
+            ],
             linkerSettings: [
                 .linkedFramework("AppKit"),
                 .linkedFramework("CoreGraphics")
