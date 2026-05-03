@@ -9,6 +9,16 @@ APP_DIR="$DIST_DIR/$APP_NAME.app"
 CONTENTS_DIR="$APP_DIR/Contents"
 MACOS_DIR="$CONTENTS_DIR/MacOS"
 RESOURCES_DIR="$CONTENTS_DIR/Resources"
+DEFAULT_SIGNING_IDENTITY="MouseCopyPaste Local Signing"
+SIGNING_IDENTITY="${MOUSECOPYPASTE_CODESIGN_IDENTITY:-}"
+
+if [[ -z "$SIGNING_IDENTITY" ]]; then
+  if security find-identity -p codesigning -v | grep -q "\"$DEFAULT_SIGNING_IDENTITY\""; then
+    SIGNING_IDENTITY="$DEFAULT_SIGNING_IDENTITY"
+  else
+    SIGNING_IDENTITY="-"
+  fi
+fi
 
 swift build --package-path "$ROOT_DIR" -c release
 
@@ -39,9 +49,9 @@ cat > "$CONTENTS_DIR/Info.plist" <<'PLIST'
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>
-  <string>1.1.0</string>
+  <string>1.2.0</string>
   <key>CFBundleVersion</key>
-  <string>2</string>
+  <string>3</string>
   <key>LSMinimumSystemVersion</key>
   <string>13.0</string>
   <key>LSUIElement</key>
@@ -52,5 +62,6 @@ cat > "$CONTENTS_DIR/Info.plist" <<'PLIST'
 </plist>
 PLIST
 
-codesign --force --sign - "$APP_DIR"
+codesign --force --deep --sign "$SIGNING_IDENTITY" "$APP_DIR"
+codesign -dv "$APP_DIR" 2>&1 | sed 's/^/codesign: /' >&2
 echo "$APP_DIR"

@@ -41,7 +41,7 @@ private final class MouseEventRouter {
 
 @MainActor
 private final class AppDelegate: NSObject, NSApplicationDelegate {
-    private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+    private let statusItem = NSStatusBar.system.statusItem(withLength: 28)
     private let router = MouseEventRouter()
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
@@ -60,7 +60,7 @@ private final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func configureMenu() {
         if let image = loadStatusIcon() {
-            image.size = NSSize(width: 18, height: 18)
+            image.size = NSSize(width: 24, height: 24)
             image.isTemplate = true
             statusItem.button?.image = image
             statusItem.button?.imagePosition = .imageOnly

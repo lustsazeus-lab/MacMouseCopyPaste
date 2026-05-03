@@ -42,6 +42,21 @@ A tiny macOS menu bar utility that maps middle click to copy and mouse button 5 
 - 授权后如果没有立刻生效，请退出并重新打开 App。
 - If it does not work immediately after granting permission, quit and reopen the app.
 
+## 辅助功能授权问题
+## Accessibility Permission Troubleshooting
+
+- 建议把 App 放到 `/Applications` 后再授权，不要直接从临时解压目录运行。
+- Put the app in `/Applications` before granting permission; avoid running it from a temporary unzip folder.
+
+- 如果升级后反复要求授权，请先从辅助功能列表里移除旧的 `MouseCopyPaste`，再重新添加新版 App。
+- If permission is requested repeatedly after an update, remove the old `MouseCopyPaste` entry from Accessibility, then add the new app again.
+
+- `v1.2.0` 开始 release 包使用稳定本地签名身份，不再使用 ad-hoc 签名。
+- Starting with `v1.2.0`, release builds use a stable local signing identity instead of ad-hoc signing.
+
+- 由于没有 Apple Developer ID，本项目仍然不是 Apple 公证包，首次打开可能仍需在系统安全设置中允许。
+- Because there is no Apple Developer ID, this project is still not Apple-notarized, so first launch may still need approval in macOS security settings.
+
 ## 从源码构建
 ## Build From Source
 
@@ -53,6 +68,17 @@ swift build
 
 - 打包后的 App 会生成在 `dist/MouseCopyPaste.app`。
 - The packaged app is generated at `dist/MouseCopyPaste.app`.
+
+- 为了让 macOS 辅助功能授权在本机反复构建后更稳定，可以先创建本地签名身份。
+- To keep macOS Accessibility permission more stable across local rebuilds, create a local signing identity first.
+
+```bash
+./scripts/create_local_signing_identity.sh
+./scripts/package_app.sh
+```
+
+- 如果没有本地签名身份，脚本会回退到 ad-hoc 签名。
+- If no local signing identity exists, the package script falls back to ad-hoc signing.
 
 ## 技术说明
 ## Technical Notes
